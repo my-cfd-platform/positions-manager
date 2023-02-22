@@ -7,7 +7,7 @@ edition = "2021"
 
 [dependencies]
 tonic = { version = "*", features = ["tls", "tls-roots", "prost"] }
-trading-sdk = { path = "/Users/hays/develop/cfd/trading-sdk" }
+trading-sdk = { git = "https://github.com/my-cfd-platform/trading-sdk", tag = "0.1.0" }
 chrono = "*"
 prost = "*"
 prost-types = "*"
