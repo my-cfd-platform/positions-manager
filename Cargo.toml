@@ -1,0 +1,17 @@
+[package]
+name = "positions-manager"
+version = "0.1.0"
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+tonic = { version = "*", features = ["tls", "tls-roots", "prost"] }
+trading-sdk = { path = "/Users/hays/develop/cfd/trading-sdk" }
+chrono = "*"
+prost = "*"
+prost-types = "*"
+uuid = { version = "*", features = ["v4"] }
+
+[build-dependencies]
+tonic-build = { version = "0.8.4", features = ["prost"] }
