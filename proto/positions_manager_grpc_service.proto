@@ -40,6 +40,8 @@ message PositionManagerOpenPositionGrpcRequest{
     optional double SlInAssetPrice = 10;
     optional double OpenPrice = 11;
     optional PositionManagerBidAsk OpenBidAsk = 12;
+    string AccountId = 13;
+    string TraderId = 14;
 }
 
 message PositionManagerActivePositionGrpcModel{
@@ -71,7 +73,9 @@ message PositionManagerOpenPositionGrpcResponse{
 
 message PositionManagerClosePositionGrpcRequest{
     string PositionId = 1;
-    string AccountId = 2;
+    string ProcessId = 2;
+    string AccountId = 3;
+    string TraderId = 4;
 }
 
 message PositionManagerClosedPositionGrpcModel{
@@ -102,10 +106,38 @@ message PositionManagerClosedPositionGrpcModel{
 
 message PositionManagerClosePositionGrpcResponse{
     PositionManagerOperationsCodes Status = 1;
-    optional PositionManagerClosedPositionGrpcModel Positon = 2;
+    optional PositionManagerClosedPositionGrpcModel Position = 2;
+}
+
+message PositionManagerGetActivePositionsGrpcRequest{
+    string TraderId = 1;
+    string AccountId = 2;
+    string PositionId = 3;
+    string TpInProfit = 4;
+    string SlInProfit = 5;
+    string TpInAssetPrice = 6;
+    string SlInAssetPrice = 7;
+}
+
+message PositionManagerUpdateSlTpGrpcRequest{
+    string PositionId = 1;
+    string AccountId = 3;
+    string TraderId = 4;
+    optional double TpInProfit = 5;
+    optional double SlInProfit = 6;
+    optional double TpInAssetPrice = 7;
+    optional double SlInAssetPrice = 8;
+    double ProcessId = 9;
+}
+
+message PositionManagerUpdateSlTpGrpcResponse{
+    PositionManagerOperationsCodes Status = 1;
+    optional PositionManagerActivePositionGrpcModel Position = 2;
 }
 
 service PositionManagerGrpcService {
     rpc OpenPosition(position_manager.PositionManagerOpenPositionGrpcRequest) returns (position_manager.PositionManagerOpenPositionGrpcResponse);
-    rpc ClosePosition(position_manager.PositionManagerClosePositionGrpcRequest) returns (position_manager.PositionManagerClosedPositionGrpcModel);
+    rpc ClosePosition(position_manager.PositionManagerClosePositionGrpcRequest) returns (position_manager.PositionManagerClosePositionGrpcResponse);
+    rpc GetAccountActivePositions(position_manager.PositionManagerGetActivePositionsGrpcRequest) returns (stream PositionManagerActivePositionGrpcModel);
+    rpc UpdateSlTp(position_manager.PositionManagerUpdateSlTpGrpcRequest) returns (PositionManagerUpdateSlTpGrpcResponse);
  }

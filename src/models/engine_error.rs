@@ -1,3 +1,4 @@
 pub enum EngineError{
-    NoLiquidity
+    NoLiquidity,
+    PositionNotFound
 }

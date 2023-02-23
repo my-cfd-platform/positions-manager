@@ -1,5 +1,7 @@
 use chrono::{DateTime, Utc};
-use trading_sdk::{ExecutionClosePositionReason, ExecutionPendingOrderType, PositionSide, get_close_price};
+use trading_sdk::{
+    get_close_price, ExecutionClosePositionReason, ExecutionPendingOrderType, PositionSide,
+};
 
 use crate::EngineBidAsk;
 
@@ -10,12 +12,28 @@ pub struct EnginePosition {
 }
 
 impl EnginePosition {
-    pub fn close_position(mut self, close_bid_ask: &EngineBidAsk, process_id: &str, close_reason: ExecutionClosePositionReason){
+
+    pub fn update_sl(&mut self, sl_in_profit: &Option<f64>, sl_in_asset_price: &Option<f64>){
+        self.position_data.stop_loss_in_asset_price = sl_in_asset_price.clone();
+        self.position_data.stop_loss_in_position_profit = sl_in_profit.clone();
+    }
+
+    pub fn update_tp(&mut self, tp_in_profit: &Option<f64>, tp_in_asset_price: &Option<f64>){
+        self.position_data.take_profit_in_asset_price = tp_in_asset_price.clone();
+        self.position_data.take_profit_in_position_profit = tp_in_profit.clone();
+    }
+
+    pub fn close_position(
+        mut self,
+        close_bid_ask: &EngineBidAsk,
+        process_id: &str,
+        close_reason: ExecutionClosePositionReason,
+    ) -> Self {
         let EnginePositionState::Active(active_state) = self.state else{
             panic!("Can't close position. Position is not active");
         };
 
-        let closed_state = ClosedPositionStates{
+        let closed_state = ClosedPositionStates {
             active_state,
             close_price: get_close_price(close_bid_ask, &self.position_data.side),
             close_bid_ask: close_bid_ask.clone(),
@@ -25,6 +43,7 @@ impl EnginePosition {
 
         self.state = EnginePositionState::Closed(closed_state);
 
+        return self;
     }
 
     pub fn get_active_state(&self) -> &ActivePositionState {
@@ -65,6 +84,7 @@ impl EnginePositionState {
 #[derive(Debug, Clone)]
 pub struct EngineBasePositionData {
     pub id: String,
+    pub account_id: String,
     pub asset_pair: String,
     pub side: PositionSide,
     pub invest_amount: f64,

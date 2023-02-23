@@ -29,6 +29,10 @@ impl ExecutionPositionBase for EnginePosition {
     fn get_so_percent(&self) -> f64 {
         self.position_data.stop_out_percent
     }
+
+    fn get_account_id(&self) -> &str {
+        &self.position_data.account_id
+    }
 }
 
 impl ActiveExecutionPosition for EnginePosition {
